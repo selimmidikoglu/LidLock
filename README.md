@@ -117,6 +117,23 @@ The script signs with your Apple Development identity if one exists, so the
 Accessibility permission survives rebuilds. Without an identity it falls back to
 ad-hoc signing and macOS resets the permission on every build.
 
+### Releasing a signed build
+
+```sh
+./release.sh 1.0.0
+```
+
+Stamps the version, builds with the **Developer ID Application** certificate,
+notarizes with `notarytool`, staples the ticket, asks Gatekeeper for the same
+verdict a downloader's Mac will reach, and publishes the zip as a GitHub
+release. It refuses to start unless both the certificate and a stored notary
+profile exist, so a half-signed build never escapes.
+
+Both need a paid Apple Developer Program account — a free personal team can only
+issue "Apple Development" certificates, which Gatekeeper rejects on any machine
+but the one that built them. That is why `install.sh` builds from source
+instead: locally built apps need no notarization.
+
 ### App icon
 
 The icon is drawn in code, not painted: `Tools/make-logo.swift` renders the
