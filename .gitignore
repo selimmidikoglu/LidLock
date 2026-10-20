@@ -12,3 +12,6 @@ Resources/AppIcon-drawn.png
 Resources/AppIcon-source.jpeg
 Resources/LidLock.png
 .vscode/
+
+# Release artefacts
+dist/

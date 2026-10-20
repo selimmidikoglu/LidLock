@@ -27,7 +27,13 @@ fi
 
 if [ -n "$IDENTITY" ]; then
   echo "› Signing as: $IDENTITY"
-  codesign --force --options runtime --sign "$IDENTITY" "$APP"
+  # Notarization rejects a signature without a secure timestamp, and only a
+  # Developer ID build is ever notarized — dev builds stay offline-friendly.
+  case "$IDENTITY" in
+    "Developer ID"*) stamp=(--timestamp) ;;
+    *) stamp=() ;;
+  esac
+  codesign --force --options runtime "${stamp[@]}" --sign "$IDENTITY" "$APP"
 else
   echo "› No Developer identity found, signing ad-hoc (Accessibility permission will reset on every rebuild)"
   codesign --force --sign - "$APP"
