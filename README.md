@@ -3,7 +3,18 @@
 # LidLock
 
 Lock the screen, keyboard, trackpad and mouse while you wipe your MacBook, then
-type a PIN to get everything back.
+type a PIN to get everything back. It also locks itself when a cat walks across
+the keys.
+
+![A kitten in armour holding the lock screen while the word human is typed](docs/demo.gif)
+
+Turn on **Watch for Cats** and LidLock locks the moment it sees a paw: several
+neighbouring keys held together, or a few keys pinned for a second and a half
+while a cat settles its weight onto the board. It reads only key positions and
+timings — never what you type, and nothing is recorded. Type **human** to take
+back over.
+
+The reason it exists, though, is the cloth in your hand:
 
 ![The cleaning lock: a black screen, a PIN, and a count of the keystrokes it swallowed](docs/cleaning.png)
 
@@ -29,20 +40,10 @@ Needs macOS 14+, and the Xcode command line tools if you build it yourself.
 1. Launch it — Settings opens because no PIN is set.
 2. Choose a PIN of 4–12 digits.
 3. Grant **System Settings › Privacy & Security › Accessibility**.
-4. Menu bar icon → **Lock for Cleaning**.
+4. Menu bar icon → **Lock for Cleaning**, or **Watch for Cats** to arm the guard.
 
 Locked out? Hold the power button for ten seconds, or wait for the auto-unlock
 timer — five minutes by default.
-
-## And when the cat walks over it
-
-![A kitten in armour holding the lock screen while the word human is typed](docs/demo.gif)
-
-Turn on **Watch for Cats** and LidLock locks itself the moment it sees a paw:
-several neighbouring keys held together, or a few keys pinned for a second and a
-half while a cat settles its weight onto the board. It reads only key positions
-and timings — never what you type, and nothing is recorded. Type **human** to
-take back over.
 
 ---
 
