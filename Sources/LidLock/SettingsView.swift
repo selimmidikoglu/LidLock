@@ -12,7 +12,6 @@ struct SettingsView: View {
     @State private var catGuard = Preferences.catGuardEnabled
     @State private var catSensitivity = Preferences.catSensitivity
     @State private var catHiss = Preferences.catHissEnabled
-    @State private var catPortrait = Preferences.catPortrait
 
     private let heartbeat = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -103,16 +102,6 @@ struct SettingsView: View {
                 Toggle("Hiss when a cat is caught", isOn: $catHiss)
                     .disabled(!catGuard)
                     .onChange(of: catHiss) { _, value in Preferences.catHissEnabled = value }
-                if CatFilm.isAvailable {
-                    Picker("Show", selection: $catPortrait) {
-                        ForEach(Preferences.CatPortrait.allCases) { choice in
-                            Text(choice.label).tag(choice)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .disabled(!catGuard)
-                    .onChange(of: catPortrait) { _, value in Preferences.catPortrait = value }
-                }
             } header: {
                 Text("Cat guard")
             } footer: {

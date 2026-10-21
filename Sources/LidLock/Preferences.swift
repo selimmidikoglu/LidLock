@@ -81,32 +81,6 @@ enum Preferences {
         set { UserDefaults.standard.set(newValue, forKey: catHissKey) }
     }
 
-    private static let catPortraitKey = "catPortrait"
-
-    enum CatPortrait: String, CaseIterable, Identifiable {
-        case kitten, knight
-
-        var id: String { rawValue }
-
-        var label: String {
-            switch self {
-            case .kitten: return "Kitten"
-            case .knight: return "Drawn knight"
-            }
-        }
-    }
-
-    /// The kitten wins when its frames are installed; a fresh checkout has none
-    /// and quietly gets the drawn knight instead.
-    static var catPortrait: CatPortrait {
-        get {
-            guard let raw = UserDefaults.standard.string(forKey: catPortraitKey),
-                  let value = CatPortrait(rawValue: raw) else { return .kitten }
-            return value
-        }
-        set { UserDefaults.standard.set(newValue.rawValue, forKey: catPortraitKey) }
-    }
-
     /// The word that releases a cat lock, in the spirit of PawSense.
     static let humanWord = "human"
 }

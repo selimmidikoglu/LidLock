@@ -98,7 +98,7 @@ final class LockController {
         pending.removeAll()
         wordBuffer = ""
         resetMatcher()
-        if reason == .cat, Preferences.catPortrait == .kitten, CatFilm.isAvailable {
+        if reason == .cat, CatFilm.isAvailable {
             CatFilm.load()
         }
         state.reason = reason
