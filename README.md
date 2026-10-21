@@ -8,6 +8,10 @@ the keys and lock itself.
 
 ## Install
 
+Download the signed, notarized build from
+[Releases](https://github.com/selimmidikoglu/LidLock/releases/latest), unzip it
+and drag it to Applications. Or build it yourself in one command:
+
 ```sh
 curl -fsSL https://raw.githubusercontent.com/selimmidikoglu/LidLock/main/install.sh | bash
 ```
