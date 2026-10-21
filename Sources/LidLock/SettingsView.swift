@@ -110,7 +110,7 @@ struct SettingsView: View {
                             .disabled(lockShortcut == .lockDefault)
                     }
                 }
-                Toggle("Meow when locking and unlocking", isOn: $meow)
+                Toggle("Meow when the lock lets go", isOn: $meow)
                     .onChange(of: meow) { _, value in
                         Preferences.meowEnabled = value
                         if value { Sounds.Meow.play() }

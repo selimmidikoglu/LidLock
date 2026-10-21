@@ -91,8 +91,8 @@ enum Preferences {
     /// The hiss is the half of the idea that trains the cat, so it defaults on.
     private static let meowKey = "meowEnabled"
 
-    /// A meow on the way in and on the way out. The screen goes black either
-    /// way, so the sound is the only confirmation that anything happened.
+    /// A meow as the lock lets go. Going in needs no confirmation — you asked
+    /// for it — but coming out can happen on a timer, with your hands full.
     static var meowEnabled: Bool {
         get {
             if UserDefaults.standard.object(forKey: meowKey) == nil { return true }

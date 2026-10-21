@@ -109,7 +109,6 @@ final class LockController {
         state.blockedKeys = 0
         state.blockedGestures = 0
         state.chromeVisible = true
-        if Preferences.meowEnabled { Sounds.Meow.play() }
         lastInput = Date()
         lastHiss = .distantPast
         lastPointerEvent = .distantPast

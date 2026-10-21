@@ -160,8 +160,9 @@ to 360, passed through two resonators standing in for a mouth that opens from
 *ee* to *aa* and closes again. The stand-in is recognisably a cat and
 recognisably not a real one.
 
-It plays as the screen locks and again as it releases: the screen is black
-either way, so the sound is the only confirmation that anything happened.
+It plays as the lock lets go, and only then. Going in was asked for and needs
+no confirmation; coming out can happen on a timer, while you are holding a
+cloth and looking at a black screen.
 
 The **hiss** is synthesised outright — white noise with the previous sample subtracted, which tilts it
 towards the high end a cat reacts to, then shaped so it fades instead of
