@@ -12,8 +12,26 @@ struct SettingsView: View {
     @State private var catGuard = Preferences.catGuardEnabled
     @State private var catSensitivity = Preferences.catSensitivity
     @State private var catHiss = Preferences.catHissEnabled
+    @State private var lockShortcut = Preferences.lockShortcut
+    @State private var shortcutTaken = false
 
     private let heartbeat = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
+    /// Takes the combination system-wide, keeping the old one if Carbon turns
+    /// it down. Carbon only reports a clash with a key this app already holds,
+    /// so a combination another app owns still registers here — both get the
+    /// keystroke, and there is no supported way to find that out in advance.
+    private func claim(_ shortcut: Hotkey.Shortcut?) {
+        guard Hotkey.shared.register(shortcut) else {
+            shortcutTaken = true
+            lockShortcut = Preferences.lockShortcut
+            Hotkey.shared.register(lockShortcut)
+            return
+        }
+        shortcutTaken = false
+        lockShortcut = shortcut
+        Preferences.lockShortcut = shortcut
+    }
 
     private var pinIsValid: Bool {
         newPin.count >= 4 && newPin.count <= 12
@@ -70,6 +88,20 @@ struct SettingsView: View {
                     }
                 }
                 .onChange(of: autoUnlock) { _, value in Preferences.autoUnlockMinutes = value }
+
+                LabeledContent("Lock shortcut") {
+                    HStack(spacing: 8) {
+                        ShortcutRecorder(shortcut: $lockShortcut, onRecorded: claim)
+                            .frame(width: 124, height: 24)
+                        Button("Default") { claim(.lockDefault) }
+                            .disabled(lockShortcut == .lockDefault)
+                    }
+                }
+                if shortcutTaken {
+                    Text("macOS turned that combination down — the previous shortcut is still in force.")
+                        .font(.callout)
+                        .foregroundStyle(.orange)
+                }
             } header: {
                 Text("Safety net")
             } footer: {

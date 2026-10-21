@@ -142,6 +142,17 @@ paw. Lock size and placement live next to `let lockW` in the same file.
 the dark rounded square inside one and crops to it, which is how an
 AI-generated icon was turned into the first version of this bundle.
 
+## The lock shortcut
+
+**⌃⌥⌘L** locks from anywhere, and Settings will record a different combination
+over it — backspace while recording clears it, escape leaves it alone.
+
+The key is claimed through Carbon's `RegisterEventHotKey` rather than a global
+`NSEvent` monitor, which would need Accessibility before the user has any
+reason to grant it. Carbon reports a clash only against a key this app already
+holds, so a combination another app owns still registers: both end up hearing
+it, and there is no supported way to ask who else is listening.
+
 ## Ways out, in order
 
 1. Type the PIN — or, out of a cat lock, the word `human`.
@@ -175,7 +186,6 @@ immediately.
 
 ## Possible next steps
 
-- Global hotkey to lock without reaching for the menu bar
 - Keyboard backlight off while locked
 - Optional Touch ID unlock alongside the PIN
 - Count how often the cat guard fires, so the sensitivity can tune itself

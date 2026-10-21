@@ -40,7 +40,7 @@ Needs macOS 14+, and the Xcode command line tools if you build it yourself.
 1. Launch it — Settings opens because no PIN is set.
 2. Choose a PIN of 4–12 digits.
 3. Grant **System Settings › Privacy & Security › Accessibility**.
-4. Menu bar icon → **Lock for Cleaning**, or **Watch for Cats** to arm the guard.
+4. Menu bar icon → **Lock for Cleaning**, or press **⌃⌥⌘L** from anywhere.
 
 Locked out? Hold the power button for ten seconds, or wait for the auto-unlock
 timer — five minutes by default.

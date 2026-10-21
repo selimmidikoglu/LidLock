@@ -81,6 +81,26 @@ enum Preferences {
         set { UserDefaults.standard.set(newValue, forKey: catHissKey) }
     }
 
+    // MARK: - Lock shortcut
+
+    private static let lockShortcutKey = "lockShortcut"
+
+    /// The global combination that locks the screen. `nil` means the user
+    /// cleared it and wants no shortcut at all, which is why a missing value
+    /// and a stored null are different things here.
+    static var lockShortcut: Hotkey.Shortcut? {
+        get {
+            guard let data = UserDefaults.standard.data(forKey: lockShortcutKey) else {
+                return .lockDefault
+            }
+            return try? JSONDecoder().decode(Hotkey.Shortcut?.self, from: data)
+        }
+        set {
+            let data = try? JSONEncoder().encode(newValue)
+            UserDefaults.standard.set(data, forKey: lockShortcutKey)
+        }
+    }
+
     /// The word that releases a cat lock, in the spirit of PawSense.
     static let humanWord = "human"
 }

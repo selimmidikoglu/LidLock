@@ -4,6 +4,8 @@ import SwiftUI
 final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Identifies the cat item without tying the lookup to its title.
     private static let catGuardTag = 1
+    /// Same idea for the lock item, whose shortcut is redrawn as it changes.
+    private static let lockTag = 2
 
     private var statusItem: NSStatusItem!
     private var settingsWindow: NSWindow?
@@ -16,6 +18,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         CatGuard.shared.onPaw = { [weak self] in self?.catDetected() }
         CatGuard.shared.refresh()
+
+        Hotkey.shared.onFire = { [weak self] in self?.lockNow() }
+        Hotkey.shared.register(Preferences.lockShortcut)
 
         if PinStore.load() == nil {
             // Deferred: an accessory app cannot reliably take focus during launch.
@@ -33,6 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let lock = NSMenuItem(title: "Lock for Cleaning", action: #selector(lockNow), keyEquivalent: "")
         lock.target = self
+        lock.tag = AppDelegate.lockTag
         menu.addItem(lock)
 
         let catGuard = NSMenuItem(title: "🐾 Watch for Cats", action: #selector(toggleCatGuard), keyEquivalent: "")
@@ -126,5 +132,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 extension AppDelegate: NSMenuDelegate {
     func menuNeedsUpdate(_ menu: NSMenu) {
         menu.item(withTag: AppDelegate.catGuardTag)?.state = CatGuard.shared.isWatching ? .on : .off
+
+        // Drawn beside the item purely as a reminder — the hotkey itself is
+        // registered globally and fires whether or not this menu is open.
+        let lock = menu.item(withTag: AppDelegate.lockTag)
+        if let shortcut = Preferences.lockShortcut {
+            lock?.keyEquivalent = shortcut.label.lowercased()
+            lock?.keyEquivalentModifierMask = shortcut.flags
+        } else {
+            lock?.keyEquivalent = ""
+            lock?.keyEquivalentModifierMask = []
+        }
     }
 }
