@@ -79,12 +79,20 @@ struct SettingsView: View {
             }
 
             Section {
-                Toggle("Watch for cats", isOn: $catGuard)
-                    .onChange(of: catGuard) { _, value in
+                // The menu bar toggles this too, so the switch reads its value
+                // back from Preferences on every heartbeat. The side effects
+                // belong to the setter rather than to `onChange`, or syncing
+                // from outside would re-run them — and ask for Accessibility
+                // again while the user is looking at something else.
+                Toggle("Watch for cats", isOn: Binding(
+                    get: { catGuard },
+                    set: { value in
+                        catGuard = value
                         if value && !EventTap.isPermitted { EventTap.requestPermission() }
                         Preferences.catGuardEnabled = value
                         CatGuard.shared.refresh()
                     }
+                ))
                 Picker("Trigger", selection: $catSensitivity) {
                     ForEach(Preferences.CatSensitivity.allCases) { level in
                         Text(level.label).tag(level)
@@ -140,6 +148,7 @@ struct SettingsView: View {
         .onReceive(heartbeat) { _ in
             accessibilityGranted = EventTap.isPermitted
             launchAtLogin = SMAppService.mainApp.status == .enabled
+            catGuard = Preferences.catGuardEnabled
             // The guard cannot start before Accessibility is granted, so pick it
             // up the moment the user comes back from System Settings.
             if catGuard && !CatGuard.shared.isWatching { CatGuard.shared.refresh() }
