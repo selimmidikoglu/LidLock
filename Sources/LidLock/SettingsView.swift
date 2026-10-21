@@ -6,7 +6,7 @@ struct SettingsView: View {
     @State private var newPin = ""
     @State private var confirmPin = ""
     @State private var errorMessage: String?
-    @State private var autoUnlock = Preferences.autoUnlockMinutes
+    @State private var autoUnlock = Preferences.autoUnlockSeconds
     @State private var accessibilityGranted = EventTap.isPermitted
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var catGuard = Preferences.catGuardEnabled
@@ -95,11 +95,11 @@ struct SettingsView: View {
 
             Section {
                 Picker("Unlock automatically after", selection: $autoUnlock) {
-                    ForEach(Preferences.autoUnlockChoices, id: \.self) { minutes in
-                        Text(Preferences.label(forMinutes: minutes)).tag(minutes)
+                    ForEach(Preferences.autoUnlockChoices, id: \.self) { seconds in
+                        Text(Preferences.label(forSeconds: seconds)).tag(seconds)
                     }
                 }
-                .onChange(of: autoUnlock) { _, value in Preferences.autoUnlockMinutes = value }
+                .onChange(of: autoUnlock) { _, value in Preferences.autoUnlockSeconds = value }
 
                 LabeledContent("Lock shortcut") {
                     HStack(spacing: 8) {

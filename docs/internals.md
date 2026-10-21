@@ -158,7 +158,8 @@ it, and there is no supported way to ask who else is listening.
 ## Ways out, in order
 
 1. Type the PIN — or, out of a cat lock, the word `human`.
-2. Wait for the auto-unlock timer (default 5 minutes, configurable).
+2. Wait for the auto-unlock timer — 1 minute by default, anything from
+   30 seconds to 30 minutes in Settings, or never.
 3. Hold the power button for ten seconds.
 
 The event tap lives inside the process — if LidLock ever dies, input comes back

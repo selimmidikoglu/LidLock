@@ -297,9 +297,9 @@ final class LockController {
     }
 
     private func startTicker() {
-        let minutes = Preferences.autoUnlockMinutes
-        deadline = minutes > 0 ? Date().addingTimeInterval(TimeInterval(minutes) * 60) : nil
-        state.secondsRemaining = minutes > 0 ? minutes * 60 : nil
+        let seconds = Preferences.autoUnlockSeconds
+        deadline = seconds > 0 ? Date().addingTimeInterval(TimeInterval(seconds)) : nil
+        state.secondsRemaining = seconds > 0 ? seconds : nil
 
         ticker = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             guard let self else { return }

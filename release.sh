@@ -96,7 +96,7 @@ Then: menu bar › **Lock for Cleaning**, and wipe the screen. Type your PIN to
 get everything back.
 
 Locked out? Hold the power button for ten seconds, or wait out the auto-unlock
-timer — five minutes by default.
+timer — one minute by default.
 
 ### Or build it yourself
 

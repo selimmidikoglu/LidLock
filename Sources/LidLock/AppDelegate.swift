@@ -22,6 +22,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Hotkey.shared.onFire = { [weak self] in self?.lockNow() }
         Hotkey.shared.register(Preferences.lockShortcut)
 
+        if AppDelegate.isTranslocated {
+            DispatchQueue.main.async { AppDelegate.warnAboutTranslocation() }
+            return
+        }
+
         if PinStore.load() == nil {
             // Deferred: an accessory app cannot reliably take focus during launch.
             DispatchQueue.main.async { [weak self] in self?.showSettings() }
@@ -64,7 +69,40 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return menu
     }
 
+    // MARK: - App translocation
+
+    /// macOS runs a quarantined app from a read-only copy at a path that
+    /// changes on every launch. Accessibility is granted to a path, so it never
+    /// sticks; and Finder, asked to delete the original, sees nothing running
+    /// there and does not warn. Both stop the moment the app is moved.
+    ///
+    /// `SecTranslocateIsTranslocatedURL` would answer this outright, but the
+    /// header it lives in is not exposed to Swift. The path is just as sure:
+    /// a translocated bundle is always mounted under `/AppTranslocation/`.
+    private static var isTranslocated: Bool {
+        Bundle.main.bundlePath.contains("/AppTranslocation/")
+    }
+
+    private static func warnAboutTranslocation() {
+        NSApp.activate(ignoringOtherApps: true)
+        let alert = NSAlert()
+        alert.messageText = "Move LidLock to your Applications folder"
+        alert.informativeText =
+            "macOS is running LidLock from a temporary copy, because it was opened straight "
+            + "out of the folder it was downloaded to. From there it cannot hold on to the "
+            + "Accessibility permission it needs to block the keyboard — the copy is thrown "
+            + "away and remade on every launch.\n\n"
+            + "Quit, drag LidLock into Applications, and open it from there."
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Quit")
+        alert.addButton(withTitle: "Continue Anyway")
+        if alert.runModal() == .alertFirstButtonReturn {
+            NSApp.terminate(nil)
+        }
+    }
+
     // MARK: - Actions
+
 
     @objc private func lockNow() {
         do {

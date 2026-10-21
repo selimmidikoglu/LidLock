@@ -1,21 +1,37 @@
 import Foundation
 
 enum Preferences {
-    private static let autoUnlockKey = "autoUnlockMinutes"
+    private static let autoUnlockKey = "autoUnlockSeconds"
+    private static let legacyAutoUnlockKey = "autoUnlockMinutes"
 
-    /// Minutes until the lock releases itself. 0 means never.
-    static var autoUnlockMinutes: Int {
+    /// Seconds until the lock releases itself. 0 means never.
+    ///
+    /// Held in seconds rather than minutes so half a minute can be offered —
+    /// long enough to wipe a screen, short enough that forgetting the PIN
+    /// costs nothing.
+    static var autoUnlockSeconds: Int {
         get {
-            if UserDefaults.standard.object(forKey: autoUnlockKey) == nil { return 5 }
-            return UserDefaults.standard.integer(forKey: autoUnlockKey)
+            if let stored = UserDefaults.standard.object(forKey: autoUnlockKey) as? Int {
+                return stored
+            }
+            // Carried over from the versions that counted in minutes.
+            if let minutes = UserDefaults.standard.object(forKey: legacyAutoUnlockKey) as? Int {
+                return minutes * 60
+            }
+            return 60
         }
         set { UserDefaults.standard.set(newValue, forKey: autoUnlockKey) }
     }
 
-    static let autoUnlockChoices = [1, 2, 5, 10, 30, 0]
+    static let autoUnlockChoices = [30, 60, 120, 300, 600, 1800, 0]
 
-    static func label(forMinutes minutes: Int) -> String {
-        minutes == 0 ? "Never" : "\(minutes) minutes"
+    static func label(forSeconds seconds: Int) -> String {
+        switch seconds {
+        case 0: return "Never"
+        case ..<60: return "\(seconds) seconds"
+        case 60: return "1 minute"
+        default: return "\(seconds / 60) minutes"
+        }
     }
 
     /// Seconds of no input before the on-screen panel fades out.

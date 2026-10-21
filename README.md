@@ -43,7 +43,7 @@ Needs macOS 14+, and the Xcode command line tools if you build it yourself.
 4. Menu bar icon → **Lock for Cleaning**, or press **⌃⌥⌘L** from anywhere.
 
 Locked out? Hold the power button for ten seconds, or wait for the auto-unlock
-timer — five minutes by default.
+timer — one minute by default, and 30 seconds to 30 minutes in Settings.
 
 ---
 
