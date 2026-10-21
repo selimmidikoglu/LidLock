@@ -104,8 +104,14 @@ ad-hoc signing and macOS resets the permission on every build.
 
 Stamps the version, builds with the **Developer ID Application** certificate,
 notarizes with `notarytool`, staples the ticket, asks Gatekeeper for the same
-verdict a downloader's Mac will reach, and publishes the zip as a GitHub
-release. It refuses to start unless both the certificate and a stored notary
+verdict a downloader's Mac will reach, and publishes the image as a GitHub
+release.
+
+The image is built by `Tools/make-dmg.sh`: the app, an alias to `/Applications`
+and a drawn backdrop with an arrow between them, so the obvious move is the
+right one. The ticket is stapled to the image rather than to the app, because
+the image is what gets downloaded — and the app ejects the image itself once it
+is running from Applications. It refuses to start unless both the certificate and a stored notary
 profile exist, so a half-signed build never escapes.
 
 Both need a paid Apple Developer Program account — a free personal team can only

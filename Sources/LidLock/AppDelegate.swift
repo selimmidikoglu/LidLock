@@ -27,6 +27,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
+        AppDelegate.ejectInstallerImage()
+
         if PinStore.load() == nil {
             // Deferred: an accessory app cannot reliably take focus during launch.
             DispatchQueue.main.async { [weak self] in self?.showSettings() }
@@ -81,6 +83,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// a translocated bundle is always mounted under `/AppTranslocation/`.
     private static var isTranslocated: Bool {
         Bundle.main.bundlePath.contains("/AppTranslocation/")
+    }
+
+    /// Ejects the disk image the app was just dragged out of.
+    ///
+    /// Finder leaves it mounted and its window open, which reads as though
+    /// something were still unfinished. Only ever ejects an image that holds
+    /// this app, and only once this copy is running from Applications.
+    private static func ejectInstallerImage() {
+        let volume = URL(fileURLWithPath: "/Volumes/LidLock")
+        let fileManager = FileManager.default
+        guard Bundle.main.bundlePath.hasPrefix("/Applications"),
+              fileManager.fileExists(atPath: volume.path),
+              fileManager.fileExists(atPath: volume.appendingPathComponent("LidLock.app").path)
+        else { return }
+        try? NSWorkspace.shared.unmountAndEjectDevice(at: volume)
     }
 
     private static func warnAboutTranslocation() {

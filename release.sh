@@ -61,21 +61,22 @@ CODESIGN_IDENTITY="$identity" "$export_dir/build.sh"
   || die "The kitten frames are missing from the bundle — refusing to publish."
 
 mkdir -p "$DIST"
-upload="$DIST/LidLock-$VERSION-upload.zip"
-ditto -c -k --keepParent "$APP" "$upload"
+asset="$DIST/LidLock-$VERSION.dmg"
+
+step "Building the disk image"
+./Tools/make-dmg.sh "$APP" "$asset"
+codesign --force --timestamp --sign "$identity" "$asset"
 
 step "Notarizing — Apple usually answers within a few minutes"
-xcrun notarytool submit "$upload" --keychain-profile "$PROFILE" --wait
+# The image is what people download, so the image is what carries the ticket.
+xcrun notarytool submit "$asset" --keychain-profile "$PROFILE" --wait
 
 step "Stapling the ticket"
-xcrun stapler staple "$APP"
-xcrun stapler validate "$APP"
-# Gatekeeper's own verdict — the check a downloader's Mac performs.
+xcrun stapler staple "$asset"
+xcrun stapler validate "$asset"
+# Gatekeeper's own verdict on the app inside — the check a downloader's Mac
+# performs once the image is open.
 spctl --assess --type execute --verbose=2 "$APP"
-
-asset="$DIST/LidLock-$VERSION.zip"
-rm -f "$asset" "$upload"
-ditto -c -k --keepParent "$APP" "$asset"
 
 notes="$DIST/notes-$VERSION.md"
 cat > "$notes" <<EOF
@@ -84,13 +85,15 @@ Gatekeeper warning — no right-click-Open dance.
 
 ### Install
 
-1. Download \`LidLock-$VERSION.zip\` from **Assets** below.
-2. Double-click it in Finder. \`LidLock.app\` appears next to it.
-3. Drag \`LidLock.app\` into your **Applications** folder.
-4. Open it. There is no Dock icon — LidLock lives in the menu bar as a
-   laptop with a paw on its screen.
-5. Settings opens on first launch: pick a PIN of 4–12 digits, and allow
-   **Accessibility** when macOS asks. Without it the keyboard cannot be blocked.
+1. Download \`LidLock-$VERSION.dmg\` from **Assets** below and open it.
+2. Drag LidLock onto the Applications folder beside it. Do not open it from
+   inside the image — macOS would run it from a temporary copy that forgets
+   the Accessibility permission on every launch.
+3. Open LidLock from Applications. There is no Dock icon — it lives in the
+   menu bar as a laptop with a paw on its screen.
+4. Settings opens on first launch: pick a PIN of 4–12 letters or digits, and
+   allow **Accessibility** when macOS asks. Without it the keyboard cannot be
+   blocked.
 
 Then: menu bar › **Lock for Cleaning**, and wipe the screen. Type your PIN to
 get everything back.

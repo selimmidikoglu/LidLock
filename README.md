@@ -25,9 +25,11 @@ PIN is.
 
 ## Install
 
-Download the signed, notarized build from
-[Releases](https://github.com/selimmidikoglu/LidLock/releases/latest), unzip it
-and drag it to Applications. Or build it from source in one command:
+Download the disk image from
+[Releases](https://github.com/selimmidikoglu/LidLock/releases/latest), open it
+and drag LidLock onto the Applications folder beside it. It is signed and
+notarized, so it opens without a Gatekeeper warning. Or build it from source in
+one command:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/selimmidikoglu/LidLock/main/install.sh | bash
