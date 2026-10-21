@@ -16,14 +16,16 @@ built and released, and what it cannot do. The short version is in the
 | Dot feedback | A digest per PIN prefix, so the dots track how far the typed tail actually matches |
 | Cat guard | A `listenOnly` tap feeding key positions and timings to a paw detector — no characters, nothing stored |
 
-The PIN uses a **sliding window**: only the last _N_ digits are compared, so the
+The PIN is letters, digits or both, folded to lower case on its way out of the
+event tap. It uses a **sliding window**: only the last _N_ characters are
+compared, so the
 hundreds of random keypresses your cloth produces never need clearing. Type the
 PIN whenever you're done and the lock releases.
 
 The lock screen starts with no dots at all, so it never gives away how long the
-PIN is. A dot appears for each digit of the typed tail that matches — formally,
+PIN is. A dot appears for each character of the typed tail that matches — formally,
 the longest suffix of everything typed that is also a prefix of the PIN. Three
-correct digits show three dots, and a fourth that misses clears the row rather
+correct characters show three dots, and a fourth that misses clears the row rather
 than falling back to the shorter tail that still matches: the dots only grow, so
 a miss is unmistakable. Unlocking is unaffected — the match itself still slides,
 so the PIN opens the lock wherever it lands in the stream. Stray cloth
@@ -176,11 +178,13 @@ immediately.
   a three-finger swipe walks past the shield into Mission Control. If something
   still escapes, `swift Tools/event-types.swift` prints every type a session tap
   actually receives while you perform it.
-- **Accidental unlock** is possible in theory: with an 8-digit PIN and ~2000
-  stray keypresses the odds are about 1 in 50,000. Use 9+ digits if that bothers
-  you.
-- **The dots leak the PIN.** Someone watching the screen can find it digit by
-  digit in ~10×N tries instead of 10^N, and the stored prefix digests are
+- **Accidental unlock** is possible in theory, and the alphabet decides how
+  remote it is: ~2000 stray keypresses against an 8-digit PIN land at roughly 1
+  in 50,000, while the same cloth against 8 letters-and-digits is about 1 in a
+  billion. Mix letters in, or use more characters.
+- **The dots leak the PIN.** Someone watching the screen can find it one
+  character at a time — ~36×N tries instead of 36^N — and the stored prefix
+  digests are
   crackable the same way. Deliberate: LidLock guards a cleaning cloth, not an
   attacker — the real boundary is the macOS login screen.
 

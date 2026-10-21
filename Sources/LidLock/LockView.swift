@@ -64,7 +64,7 @@ struct LockView: View {
             dots
                 .padding(.top, 30)
 
-            Text("Type your PIN — a dot appears for each digit that matches")
+            Text("Type your PIN — a dot appears for each character that matches")
                 .font(.system(size: 12))
                 .foregroundStyle(.white.opacity(0.35))
                 .padding(.top, 16)

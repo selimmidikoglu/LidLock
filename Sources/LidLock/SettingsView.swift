@@ -15,6 +15,12 @@ struct SettingsView: View {
     @State private var lockShortcut = Preferences.lockShortcut
     @State private var shortcutTaken = false
 
+    /// Which PIN field holds the keyboard. Without saying so explicitly, AppKit
+    /// hands focus to the next field when the Save button goes disabled — and
+    /// a caret blinking in an empty Confirm box reads as "still waiting".
+    private enum PinField { case entry, confirmation }
+    @FocusState private var focused: PinField?
+
     private let heartbeat = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     /// Takes the combination system-wide, keeping the old one if Carbon turns
@@ -33,9 +39,11 @@ struct SettingsView: View {
         Preferences.lockShortcut = shortcut
     }
 
+    /// Letters are folded to lower case on their way out of the event tap, so a
+    /// PIN is compared without case and may as well be stored that way.
     private var pinIsValid: Bool {
         newPin.count >= 4 && newPin.count <= 12
-            && newPin.allSatisfy(\.isNumber)
+            && newPin.allSatisfy { $0.isASCII && ($0.isNumber || $0.isLetter) }
             && newPin == confirmPin
     }
 
@@ -44,7 +52,7 @@ struct SettingsView: View {
             Section {
                 LabeledContent("Status") {
                     if let pinLength {
-                        Label("\(pinLength)-digit PIN set", systemImage: "checkmark.circle.fill")
+                        Label("\(pinLength)-character PIN set", systemImage: "checkmark.circle.fill")
                             .foregroundStyle(.green)
                             .labelStyle(.titleAndIcon)
                     } else {
@@ -53,12 +61,16 @@ struct SettingsView: View {
                             .labelStyle(.titleAndIcon)
                     }
                 }
-                SecureField("New PIN", text: $newPin, prompt: Text("4–12 digits"))
+                SecureField("New PIN", text: $newPin, prompt: Text("4–12 letters or digits"))
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 150)
+                    .focused($focused, equals: .entry)
+                    .onSubmit { focused = .confirmation }
                 SecureField("Confirm", text: $confirmPin)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 150)
+                    .focused($focused, equals: .confirmation)
+                    .onSubmit { if pinIsValid { savePin() } }
                 HStack {
                     if let errorMessage {
                         Text(errorMessage)
@@ -191,11 +203,15 @@ struct SettingsView: View {
 
     private func savePin() {
         do {
-            try PinStore.save(pin: newPin)
+            // The tap lower-cases every letter it reads, so a PIN stored with
+            // a capital in it could never be typed back.
+            try PinStore.save(pin: newPin.lowercased())
             pinLength = newPin.count
             newPin = ""
             confirmPin = ""
             errorMessage = nil
+            // The PIN is set; nothing here wants the keyboard any more.
+            focused = nil
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -205,6 +221,9 @@ struct SettingsView: View {
         PinStore.clear()
         pinLength = nil
         errorMessage = nil
+        newPin = ""
+        confirmPin = ""
+        focused = .entry
     }
 
     private func openAccessibilitySettings() {

@@ -18,6 +18,7 @@ swiftc -O \
   Sources/LidLock/Preferences.swift \
   Sources/LidLock/PawDetector.swift \
   Sources/LidLock/KeyGeometry.swift \
+  Sources/LidLock/Hotkey.swift \
   Tools/make-demo.swift \
   -o "$frames/make-demo"
 

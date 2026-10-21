@@ -48,13 +48,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(.separator())
 
-        let settings = NSMenuItem(title: "Settings…", action: #selector(showSettings), keyEquivalent: ",")
+        // No key equivalents on these two: a menu bar accessory has no main
+        // menu, so they would only ever work with the menu already open —
+        // drawn like a shortcut, useless as one.
+        let settings = NSMenuItem(title: "Settings…", action: #selector(showSettings), keyEquivalent: "")
         settings.target = self
         menu.addItem(settings)
 
         menu.addItem(.separator())
 
-        let quit = NSMenuItem(title: "Quit LidLock", action: #selector(quit), keyEquivalent: "q")
+        let quit = NSMenuItem(title: "Quit LidLock", action: #selector(quit), keyEquivalent: "")
         quit.target = self
         menu.addItem(quit)
 

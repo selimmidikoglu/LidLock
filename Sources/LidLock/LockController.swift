@@ -184,10 +184,11 @@ final class LockController {
     }
 
     private func ingest(_ character: Character) {
-        if character.isLetter {
-            ingestLetter(character)
-            return
-        }
+        // A letter can be two things at once: a step towards the unlock word of
+        // a cat lock, and a character of the PIN. It feeds both, because
+        // stopping at the word would put letters out of the PIN's reach — which
+        // is the only reason the PIN was ever digits alone.
+        if character.isLetter { ingestLetter(character) }
         guard record != nil else { return }
         pending.append(character)
         drain()
