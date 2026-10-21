@@ -14,6 +14,19 @@ struct Demo {
     static func main() {
         let dir = CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "."
         CatFilm.load()
+
+        // A single still of the cleaning lock, for the README.
+        if CommandLine.arguments.contains("still") {
+            let state = LockState()
+            state.reason = .cleaning
+            state.digitsEntered = 3
+            state.blockedKeys = 418
+            state.secondsRemaining = 207
+            var frame = 0
+            write(state, to: dir, frame: &frame, size: CGSize(width: 1200, height: 760))
+            return
+        }
+
         if CatFilm.frames.isEmpty {
             FileHandle.standardError.write(Data("no kitten frames next to the binary\n".utf8))
         }
@@ -43,7 +56,8 @@ struct Demo {
     }
 
     @MainActor
-    private static func write(_ state: LockState, to dir: String, frame: inout Int) {
+    private static func write(_ state: LockState, to dir: String, frame: inout Int,
+                              size: CGSize = Demo.size) {
         let renderer = ImageRenderer(
             content: LockView(state: state).frame(width: size.width, height: size.height)
         )
