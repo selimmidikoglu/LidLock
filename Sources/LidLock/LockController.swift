@@ -111,6 +111,12 @@ final class LockController {
         state.chromeVisible = true
         lastInput = Date()
         lastHiss = .distantPast
+        // A cleaning lock stays quiet: you asked for it, and you are standing
+        // right there. Only the cat gets told off.
+        if reason == .cat, Preferences.catHissEnabled {
+            lastHiss = Date()
+            Sounds.catAlarm()
+        }
         lastPointerEvent = .distantPast
 
         windows = NSScreen.screens.map { ShieldWindow(screen: $0, state: state) }
@@ -142,7 +148,6 @@ final class LockController {
         guard isLocked else { return }
         teardown()
         isLocked = false
-        if Preferences.meowEnabled { Sounds.Meow.play() }
         NSApp.deactivate()
     }
 
@@ -325,9 +330,9 @@ final class LockController {
     private func hissIfCatIsStillThere() {
         guard reason == .cat, Preferences.catHissEnabled else { return }
         let now = Date()
-        guard now.timeIntervalSince(lastInput) < 2.5, now.timeIntervalSince(lastHiss) > 3 else { return }
+        guard now.timeIntervalSince(lastInput) < 2.5, now.timeIntervalSince(lastHiss) > 6 else { return }
         lastHiss = now
-        Sounds.Hiss.play()
+        Sounds.catAlarm()
     }
 
     // MARK: - Sleep assertion

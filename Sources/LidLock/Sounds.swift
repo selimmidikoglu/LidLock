@@ -10,7 +10,10 @@ enum Sounds {
 
     /// Starts the engine on first use. A menu bar app that may never lock the
     /// screen has no business holding an audio graph open from launch.
-    private static func play(_ buffer: AVAudioPCMBuffer?) {
+    /// `interrupting: false` queues the buffer behind whatever is already
+    /// scheduled, which is how the hiss comes out after the meow rather than
+    /// cutting it in half.
+    private static func play(_ buffer: AVAudioPCMBuffer?, interrupting: Bool = true) {
         guard let buffer else { return }
         if !started {
             engine.attach(player)
@@ -19,7 +22,13 @@ enum Sounds {
             started = true
         }
         if !player.isPlaying { player.play() }
-        player.scheduleBuffer(buffer, at: nil, options: .interrupts)
+        player.scheduleBuffer(buffer, at: nil, options: interrupting ? .interrupts : [])
+    }
+
+    /// What a cat hears when it is caught: a meow, then the hiss behind it.
+    static func catAlarm() {
+        play(Meow.sound)
+        play(Hiss.sound, interrupting: false)
     }
 
     static func stop() {
@@ -87,7 +96,7 @@ enum Sounds {
 
     /// A burst of noise steered high, where a cat's attention lives.
     enum Hiss {
-        private static let sound: AVAudioPCMBuffer? = {
+        static let sound: AVAudioPCMBuffer? = {
             var previous: Float = 0
             return Sounds.buffer(seconds: 0.45, peak: 0.40) { _, progress in
                 let white = Float.random(in: -1...1)
@@ -99,14 +108,13 @@ enum Sounds {
             }
         }()
 
-        static func play() { Sounds.play(sound) }
         static func stop() { Sounds.stop() }
     }
 
     /// A recorded cat, with a synthesised stand-in — the arching buzz of a
     /// cord through two resonators — for a bundle that has lost the recording.
     enum Meow {
-        private static let sound: AVAudioPCMBuffer? = recorded() ?? synthesised
+        static let sound: AVAudioPCMBuffer? = recorded() ?? synthesised
 
         /// Reads `Sounds/meow.m4a` from the bundle. The engine is wired for one
         /// format, so a file in any other is left alone rather than resampled
@@ -158,6 +166,5 @@ enum Sounds {
             }
         }()
 
-        static func play() { Sounds.play(sound) }
     }
 }

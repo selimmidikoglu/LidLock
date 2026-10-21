@@ -11,8 +11,9 @@ the keys.
 Turn on **Watch for Cats** and LidLock locks the moment it sees a paw: several
 neighbouring keys held together, or a few keys pinned for a second and a half
 while a cat settles its weight onto the board. It reads only key positions and
-timings — never what you type, and nothing is recorded. Type **human** to take
-back over.
+timings — never what you type, and nothing is recorded. It meows and hisses as
+it catches her, and goes on doing it while she is still on the keys. Type
+**human** to take back over.
 
 The reason it exists, though, is the cloth in your hand:
 

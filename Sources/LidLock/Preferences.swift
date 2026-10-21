@@ -89,18 +89,6 @@ enum Preferences {
     }
 
     /// The hiss is the half of the idea that trains the cat, so it defaults on.
-    private static let meowKey = "meowEnabled"
-
-    /// A meow as the lock lets go. Going in needs no confirmation — you asked
-    /// for it — but coming out can happen on a timer, with your hands full.
-    static var meowEnabled: Bool {
-        get {
-            if UserDefaults.standard.object(forKey: meowKey) == nil { return true }
-            return UserDefaults.standard.bool(forKey: meowKey)
-        }
-        set { UserDefaults.standard.set(newValue, forKey: meowKey) }
-    }
-
     static var catHissEnabled: Bool {
         get {
             if UserDefaults.standard.object(forKey: catHissKey) == nil { return true }
