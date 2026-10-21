@@ -78,14 +78,41 @@ asset="$DIST/LidLock-$VERSION.zip"
 rm -f "$asset" "$upload"
 ditto -c -k --keepParent "$APP" "$asset"
 
+notes="$DIST/notes-$VERSION.md"
+cat > "$notes" <<EOF
+macOS 14 or newer. Signed and notarized by Apple, so it opens without a
+Gatekeeper warning — no right-click-Open dance.
+
+### Install
+
+1. Download \`LidLock-$VERSION.zip\` from **Assets** below.
+2. Double-click it in Finder. \`LidLock.app\` appears next to it.
+3. Drag \`LidLock.app\` into your **Applications** folder.
+4. Open it. There is no Dock icon — LidLock lives in the menu bar as a
+   laptop with a paw on its screen.
+5. Settings opens on first launch: pick a PIN of 4–12 digits, and allow
+   **Accessibility** when macOS asks. Without it the keyboard cannot be blocked.
+
+Then: menu bar › **Lock for Cleaning**, and wipe the screen. Type your PIN to
+get everything back.
+
+Locked out? Hold the power button for ten seconds, or wait out the auto-unlock
+timer — five minutes by default.
+
+### Or build it yourself
+
+No download to trust; this compiles from source on your own Mac and needs the
+Xcode command line tools.
+
+\`\`\`sh
+curl -fsSL https://raw.githubusercontent.com/selimmidikoglu/LidLock/main/install.sh | bash
+\`\`\`
+EOF
+
 step "Publishing v$VERSION"
 git push -q origin main "v$VERSION"
 gh release create "v$VERSION" "$asset" \
   --title "LidLock $VERSION" \
-  --notes "Signed and notarized — download, unzip, drag to Applications.
-
-Or build it yourself:
-
-    curl -fsSL https://raw.githubusercontent.com/selimmidikoglu/LidLock/main/install.sh | bash"
+  --notes-file "$notes"
 
 printf '\n\033[1m› Published:\033[0m %s\n\n' "$asset"
