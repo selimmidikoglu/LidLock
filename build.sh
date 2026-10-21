@@ -16,8 +16,12 @@ cp .build/release/LidLock "$APP/Contents/MacOS/LidLock"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/LidLock.icns "$APP/Contents/Resources/LidLock.icns"
 
-# Third-party footage, kept out of version control — the app falls back to the
-# drawn knight when it is absent.
+# Both are optional: without the frames the drawn knight stands in, without the
+# recording the meow is synthesised.
+if [ -d Resources/Sounds ]; then
+  cp -R Resources/Sounds "$APP/Contents/Resources/Sounds"
+fi
+
 if [ -d Resources/CatFilm ]; then
   cp -R Resources/CatFilm "$APP/Contents/Resources/CatFilm"
   echo "› Bundled kitten frames: $(ls Resources/CatFilm | wc -l | tr -d ' ')"

@@ -152,22 +152,22 @@ AI-generated icon was turned into the first version of this bundle.
 
 ## The two noises
 
-Both are synthesised in `Sounds.swift` rather than shipped as audio, so nothing
-has to be licensed and the binary stays the binary.
-
-The **hiss** is white noise with the previous sample subtracted, which tilts it
-towards the high end a cat reacts to, then shaped so it fades instead of
-clicking off.
-
-The **meow** is a buzzing cord — a sawtooth built from twelve harmonics, to
-keep aliasing out — whose pitch arches from 520 Hz up to 700 and falls away to
-360, wobbling slightly on the way. That buzz passes through two resonators
-standing in for a mouth, opening from *ee* to *aa* and closing again. Each
-voice is normalised to a measured peak afterwards, because a resonator
-multiplies its input by whatever it likes and guessing the gain does not work.
+The **meow** is a recording, trimmed out of a longer clip and kept in
+`Resources/Sounds/meow.m4a` — fourteen kilobytes, faded at both ends so it
+neither clicks nor cuts off, and normalised. Delete it and the app synthesises
+one instead: a sawtooth cord whose pitch arches from 520 Hz to 700 and falls
+to 360, passed through two resonators standing in for a mouth that opens from
+*ee* to *aa* and closes again. The stand-in is recognisably a cat and
+recognisably not a real one.
 
 It plays as the screen locks and again as it releases: the screen is black
 either way, so the sound is the only confirmation that anything happened.
+
+The **hiss** is synthesised outright — white noise with the previous sample subtracted, which tilts it
+towards the high end a cat reacts to, then shaped so it fades instead of
+clicking off. Every synthesised voice is normalised to a measured peak, because
+a resonator multiplies its input by whatever it likes and guessing the gain does
+not work — the meow came out at five times full scale the first time.
 
 ## The lock shortcut
 

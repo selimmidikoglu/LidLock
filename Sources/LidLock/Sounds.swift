@@ -103,10 +103,31 @@ enum Sounds {
         static func stop() { Sounds.stop() }
     }
 
-    /// "Mi-aav": a buzzing cord whose pitch arches up and falls away, filtered
-    /// through a mouth that opens from *ee* to *aa* and closes again.
+    /// A recorded cat, with a synthesised stand-in — the arching buzz of a
+    /// cord through two resonators — for a bundle that has lost the recording.
     enum Meow {
-        private static let sound: AVAudioPCMBuffer? = {
+        private static let sound: AVAudioPCMBuffer? = recorded() ?? synthesised
+
+        /// Reads `Sounds/meow.m4a` from the bundle. The engine is wired for one
+        /// format, so a file in any other is left alone rather than resampled
+        /// on the way to a lock screen.
+        private static func recorded() -> AVAudioPCMBuffer? {
+            guard let url = Bundle.main.resourceURL?
+                    .appendingPathComponent("Sounds/meow.m4a"),
+                  FileManager.default.fileExists(atPath: url.path),
+                  let file = try? AVAudioFile(forReading: url),
+                  file.processingFormat.sampleRate == Sounds.sampleRate,
+                  file.processingFormat.channelCount == 1,
+                  let buffer = AVAudioPCMBuffer(
+                      pcmFormat: file.processingFormat,
+                      frameCapacity: AVAudioFrameCount(file.length)
+                  ),
+                  (try? file.read(into: buffer)) != nil
+            else { return nil }
+            return buffer
+        }
+
+        private static let synthesised: AVAudioPCMBuffer? = {
             var phase = 0.0
             var first = Formant()
             var second = Formant()
