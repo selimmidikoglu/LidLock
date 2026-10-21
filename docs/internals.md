@@ -178,3 +178,4 @@ immediately.
 - Global hotkey to lock without reaching for the menu bar
 - Keyboard backlight off while locked
 - Optional Touch ID unlock alongside the PIN
+- Count how often the cat guard fires, so the sensitivity can tune itself
