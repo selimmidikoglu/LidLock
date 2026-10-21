@@ -30,10 +30,12 @@ if [ -n "$IDENTITY" ]; then
   # Notarization rejects a signature without a secure timestamp, and only a
   # Developer ID build is ever notarized — dev builds stay offline-friendly.
   case "$IDENTITY" in
-    "Developer ID"*) stamp=(--timestamp) ;;
-    *) stamp=() ;;
+    "Developer ID"*) stamp="--timestamp" ;;
+    *) stamp="" ;;
   esac
-  codesign --force --options runtime "${stamp[@]}" --sign "$IDENTITY" "$APP"
+  # Unquoted on purpose: an empty $stamp must expand to no argument at all,
+  # and "${stamp[@]}" is an unbound-variable error under bash 3.2 + set -u.
+  codesign --force --options runtime $stamp --sign "$IDENTITY" "$APP"
 else
   echo "› No Developer identity found, signing ad-hoc (Accessibility permission will reset on every rebuild)"
   codesign --force --sign - "$APP"
