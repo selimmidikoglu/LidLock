@@ -160,8 +160,10 @@ to 360, passed through two resonators standing in for a mouth that opens from
 *ee* to *aa* and closes again. The stand-in is recognisably a cat and
 recognisably not a real one.
 
-Only a cat lock makes a sound, and it makes both: the meow first, the hiss
-queued behind it so it follows rather than cutting it off. It repeats every six
+Only a cat lock makes a sound, and it makes both: meow then hiss, welded into
+one buffer with a breath between them. Scheduling the two separately left them
+at the mercy of what the player does with a queue while the engine is still
+starting — and what it did was swallow the meow. It repeats every six
 seconds for as long as keys are still being pressed, so a cat that has walked
 away gets silence. A cleaning lock is silent throughout — you asked for it, you
 are standing over it, and a wiping cloth does not need telling off.

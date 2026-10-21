@@ -10,10 +10,7 @@ enum Sounds {
 
     /// Starts the engine on first use. A menu bar app that may never lock the
     /// screen has no business holding an audio graph open from launch.
-    /// `interrupting: false` queues the buffer behind whatever is already
-    /// scheduled, which is how the hiss comes out after the meow rather than
-    /// cutting it in half.
-    private static func play(_ buffer: AVAudioPCMBuffer?, interrupting: Bool = true) {
+    private static func play(_ buffer: AVAudioPCMBuffer?) {
         guard let buffer else { return }
         if !started {
             engine.attach(player)
@@ -22,14 +19,36 @@ enum Sounds {
             started = true
         }
         if !player.isPlaying { player.play() }
-        player.scheduleBuffer(buffer, at: nil, options: interrupting ? .interrupts : [])
+        player.scheduleBuffer(buffer, at: nil, options: .interrupts)
     }
 
-    /// What a cat hears when it is caught: a meow, then the hiss behind it.
-    static func catAlarm() {
-        play(Meow.sound)
-        play(Hiss.sound, interrupting: false)
-    }
+    /// What a cat hears when it is caught.
+    static func catAlarm() { play(alarm) }
+
+    /// The meow and the hiss welded into a single buffer, with a breath
+    /// between them. Scheduling two would leave the pair at the mercy of what
+    /// the player does with a queue while the engine is still starting — and
+    /// what it did was swallow the first one.
+    static let alarm: AVAudioPCMBuffer? = {
+        guard let meow = Meow.sound, let hiss = Hiss.sound,
+              meow.format.sampleRate == hiss.format.sampleRate,
+              meow.format.channelCount == hiss.format.channelCount
+        else { return Meow.sound ?? Hiss.sound }
+
+        let gap = AVAudioFrameCount(sampleRate * 0.06)
+        let total = meow.frameLength + gap + hiss.frameLength
+        guard let joined = AVAudioPCMBuffer(pcmFormat: meow.format, frameCapacity: total),
+              let out = joined.floatChannelData?[0],
+              let first = meow.floatChannelData?[0],
+              let second = hiss.floatChannelData?[0] else { return meow }
+
+        joined.frameLength = total
+        for index in 0..<Int(total) { out[index] = 0 }
+        for index in 0..<Int(meow.frameLength) { out[index] = first[index] }
+        let offset = Int(meow.frameLength + gap)
+        for index in 0..<Int(hiss.frameLength) { out[offset + index] = second[index] }
+        return joined
+    }()
 
     static func stop() {
         guard started else { return }
