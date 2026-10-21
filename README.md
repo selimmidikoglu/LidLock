@@ -6,6 +6,8 @@ Lock the screen, keyboard, trackpad and mouse while you clean your MacBook, then
 type a PIN to get everything back. It can also watch for a cat walking across
 the keys and lock itself.
 
+![LidLock locking the keyboard when a cat walks over it](docs/demo.gif)
+
 ## Install
 
 Download the signed, notarized build from
@@ -79,18 +81,16 @@ Ig Nobel for it.
 
 ### The kitten
 
-The lock can show either a drawn knight or a real kitten in armour, picked in
-Settings. The drawn one lives in `CatKnightView.swift` and costs nothing — it is
-shapes and a clock.
+The lock shows the kitten in armour above: fourteen JPEG frames in
+`Resources/CatFilm/`, played forward and then back so a clip with no natural
+loop still cycles without a jump. They are loaded only while a cat lock is on
+screen and dropped the moment it ends — a menu bar utility has no business
+holding decoded photographs while it sits idle.
 
-The kitten is fourteen JPEG frames in `Resources/CatFilm/`, played forward and
-then back so a clip with no natural loop still cycles without a jump. They are
-loaded only while a cat lock is on screen and dropped the moment it ends.
-
-Those frames are **third-party footage and are not in version control**. A fresh
-checkout has no `Resources/CatFilm/` folder, `build.sh` says so, the Settings
-picker hides itself, and the drawn knight stands in. If you want your own cat
-there, point `ffmpeg` at a clip of your choosing:
+There is no setting to pick a portrait. Delete the folder and a drawn knight
+stands in instead, shapes and a clock in `CatKnightView.swift`, costing nothing
+and staying crisp at any size. If you want your own cat there, point `ffmpeg` at
+a clip of your choosing:
 
 ```sh
 mkdir -p Resources/CatFilm
@@ -137,6 +137,16 @@ Both need a paid Apple Developer Program account — a free personal team can on
 issue "Apple Development" certificates, which Gatekeeper rejects on any machine
 but the one that built them. That is why `install.sh` builds from source
 instead: locally built apps need no notarization.
+
+### The README demo
+
+```sh
+./Tools/make-demo.sh          # → docs/demo.gif
+```
+
+Renders the GIF at the top of this file from the app's own lock views, compiled
+straight out of `Sources/LidLock` — the screens in the demo are the screens it
+ships, not a mock-up. Needs `ffmpeg`.
 
 ### App icon
 

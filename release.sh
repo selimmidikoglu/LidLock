@@ -56,10 +56,9 @@ APP="$export_dir/build/LidLock.app"
 step "Building and signing as: $identity"
 CODESIGN_IDENTITY="$identity" "$export_dir/build.sh"
 
-# The kitten frames are not ours to redistribute; a clean export cannot contain
-# them, and this is the assertion that says so out loud.
+# The kitten ships, so a build without him is a build with a broken export.
 [ -d "$APP/Contents/Resources/CatFilm" ] \
-  && die "Third-party kitten frames ended up in the bundle — refusing to publish."
+  || die "The kitten frames are missing from the bundle — refusing to publish."
 
 mkdir -p "$DIST"
 upload="$DIST/LidLock-$VERSION-upload.zip"
