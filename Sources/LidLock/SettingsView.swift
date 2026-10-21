@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var catGuard = Preferences.catGuardEnabled
     @State private var catSensitivity = Preferences.catSensitivity
     @State private var catHiss = Preferences.catHissEnabled
+    @State private var meow = Preferences.meowEnabled
     @State private var lockShortcut = Preferences.lockShortcut
     @State private var shortcutTaken = false
 
@@ -109,6 +110,11 @@ struct SettingsView: View {
                             .disabled(lockShortcut == .lockDefault)
                     }
                 }
+                Toggle("Meow when locking and unlocking", isOn: $meow)
+                    .onChange(of: meow) { _, value in
+                        Preferences.meowEnabled = value
+                        if value { Sounds.Meow.play() }
+                    }
                 if shortcutTaken {
                     Text("macOS turned that combination down — the previous shortcut is still in force.")
                         .font(.callout)

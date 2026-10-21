@@ -150,6 +150,25 @@ paw. Lock size and placement live next to `let lockW` in the same file.
 the dark rounded square inside one and crops to it, which is how an
 AI-generated icon was turned into the first version of this bundle.
 
+## The two noises
+
+Both are synthesised in `Sounds.swift` rather than shipped as audio, so nothing
+has to be licensed and the binary stays the binary.
+
+The **hiss** is white noise with the previous sample subtracted, which tilts it
+towards the high end a cat reacts to, then shaped so it fades instead of
+clicking off.
+
+The **meow** is a buzzing cord — a sawtooth built from twelve harmonics, to
+keep aliasing out — whose pitch arches from 520 Hz up to 700 and falls away to
+360, wobbling slightly on the way. That buzz passes through two resonators
+standing in for a mouth, opening from *ee* to *aa* and closing again. Each
+voice is normalised to a measured peak afterwards, because a resonator
+multiplies its input by whatever it likes and guessing the gain does not work.
+
+It plays as the screen locks and again as it releases: the screen is black
+either way, so the sound is the only confirmation that anything happened.
+
 ## The lock shortcut
 
 **⌃⌥⌘L** locks from anywhere, and Settings will record a different combination

@@ -109,6 +109,7 @@ final class LockController {
         state.blockedKeys = 0
         state.blockedGestures = 0
         state.chromeVisible = true
+        if Preferences.meowEnabled { Sounds.Meow.play() }
         lastInput = Date()
         lastHiss = .distantPast
         lastPointerEvent = .distantPast
@@ -142,6 +143,7 @@ final class LockController {
         guard isLocked else { return }
         teardown()
         isLocked = false
+        if Preferences.meowEnabled { Sounds.Meow.play() }
         NSApp.deactivate()
     }
 
@@ -162,7 +164,7 @@ final class LockController {
         pending.removeAll()
         wordBuffer = ""
         resetMatcher()
-        Hiss.stop()
+        Sounds.Hiss.stop()
         CatFilm.unload()
         record = nil
         state.digitsEntered = 0
@@ -326,7 +328,7 @@ final class LockController {
         let now = Date()
         guard now.timeIntervalSince(lastInput) < 2.5, now.timeIntervalSince(lastHiss) > 3 else { return }
         lastHiss = now
-        Hiss.play()
+        Sounds.Hiss.play()
     }
 
     // MARK: - Sleep assertion
